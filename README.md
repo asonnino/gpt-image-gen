@@ -8,6 +8,12 @@ A simple Python script to generate images using OpenAI's latest gpt-image-1 mode
 pipx install git+https://github.com/asonnino/openai-image-generator.git
 ```
 
+Set your OpenAI API key:
+
+```bash
+export OPENAI_API_KEY="your-api-key-here"
+```
+
 Then use it from anywhere:
 
 ```bash
