@@ -2,7 +2,19 @@
 
 A simple Python script to generate images using OpenAI's latest gpt-image-1 model by describing what you want in plain English.
 
-## Setup
+## Quick Install with pipx
+
+```bash
+pipx install git+https://github.com/asonnino/openai-image-generator.git
+```
+
+Then use it from anywhere:
+
+```bash
+gpt-image-gen --prompt "a beautiful sunset"
+```
+
+## Manual Setup
 
 1. Install dependencies:
 
