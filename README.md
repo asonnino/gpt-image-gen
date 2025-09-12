@@ -1,5 +1,6 @@
 # GPT Image Generator
 
+[![CI](https://github.com/asonnino/openai-image-generator/actions/workflows/ci.yml/badge.svg)](https://github.com/asonnino/openai-image-generator/actions/workflows/ci.yml)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![OpenAI API](https://img.shields.io/badge/OpenAI-API-white.svg)](https://platform.openai.com/)
