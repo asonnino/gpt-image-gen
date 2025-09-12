@@ -1,5 +1,9 @@
 # GPT Image Generator
 
+[![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![OpenAI API](https://img.shields.io/badge/OpenAI-API-yellow.svg)](https://platform.openai.com/)
+
 A simple Python script to generate images using OpenAI's latest gpt-image-1 model by describing what you want in plain English.
 
 ## Quick Install with pipx
