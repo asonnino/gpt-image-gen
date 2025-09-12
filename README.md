@@ -20,20 +20,6 @@ Then use it from anywhere:
 gpt-image-gen --prompt "a beautiful sunset"
 ```
 
-## Manual Setup
-
-1. Install dependencies:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. Set your OpenAI API key as an environment variable:
-
-   ```bash
-   export OPENAI_API_KEY="your-api-key-here"
-   ```
-
 ## Usage
 
 ### Interactive mode
@@ -75,6 +61,19 @@ python gpt_image_gen.py -p "quick sketch" --quality low
 python gpt_image_gen.py -p "sunset" -m gpt-image-1 -s 1024x1024 -q high
 ```
 
+### Using an image as inspiration
+
+```bash
+# Use an image as sole inspiration (analyzes the image and generates based on it)
+python gpt_image_gen.py --inspiration-image sunset.jpg
+
+# Combine image inspiration with custom prompt
+python gpt_image_gen.py --inspiration-image sunset.jpg --prompt "make it more vibrant with purple clouds"
+
+# Short form
+python gpt_image_gen.py -i reference.png -p "transform into cyberpunk style"
+```
+
 ### View help
 
 ```bash
@@ -86,6 +85,7 @@ The generated image will be saved in the current directory with a timestamp and 
 ## Features
 
 - Uses OpenAI's latest gpt-image-1 model by default (2025) for superior image generation
+- **Image inspiration**: Use any image as inspiration - analyzes it with GPT-4 Vision to enhance your prompts
 - Low quality by default for cost efficiency (can be overridden with --quality)
 - Saves images locally with descriptive filenames
 - Supports both interactive and command-line usage

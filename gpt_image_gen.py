@@ -10,10 +10,74 @@ from openai import OpenAI
 from datetime import datetime
 import requests
 from typing import Literal, cast
+import base64
+
+
+def analyze_image_with_vision(image_path, api_key=None, user_prompt=None):
+    """Analyze an image using GPT-4 Vision and generate a detailed description."""
+    
+    # Get API key from environment or parameter
+    if not api_key:
+        api_key = os.getenv("OPENAI_API_KEY")
+    
+    if not api_key:
+        print("Error: OpenAI API key not found!")
+        return None
+    
+    # Check if image file exists
+    if not os.path.exists(image_path):
+        print(f"Error: Image file not found: {image_path}")
+        return None
+    
+    # Initialize OpenAI client
+    client = OpenAI(api_key=api_key)
+    
+    try:
+        # Read and encode the image
+        with open(image_path, "rb") as image_file:
+            base64_image = base64.b64encode(image_file.read()).decode('utf-8')
+        
+        print(f"Analyzing inspiration image: {image_path}...")
+        
+        # Prepare the vision prompt
+        vision_prompt = "Analyze this image in detail. Describe the style, colors, composition, mood, lighting, and any notable elements. Be specific and detailed."
+        if user_prompt:
+            vision_prompt += f" Also consider this user guidance: {user_prompt}"
+        
+        # Call GPT-4 Vision
+        response = client.chat.completions.create(
+            model="gpt-4o",  # Using GPT-4o for vision capabilities
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": vision_prompt
+                        },
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": f"data:image/jpeg;base64,{base64_image}"
+                            }
+                        }
+                    ]
+                }
+            ],
+            max_tokens=500
+        )
+        
+        description = response.choices[0].message.content
+        print("✓ Image analysis complete")
+        return description
+        
+    except Exception as e:
+        print(f"Error analyzing image: {e}")
+        return None
 
 
 def generate_image(
-    prompt, api_key=None, model="gpt-image-1", size="1024x1024", quality="low"
+    prompt, api_key=None, model="gpt-image-1", size="1024x1024", quality="low", inspiration_image=None
 ):
     """Generate an image from a text prompt using OpenAI's image models."""
 
@@ -28,9 +92,27 @@ def generate_image(
 
     # Initialize OpenAI client
     client = OpenAI(api_key=api_key)
+    
+    # If inspiration image is provided, analyze it first
+    if inspiration_image:
+        image_description = analyze_image_with_vision(inspiration_image, api_key, prompt)
+        if image_description:
+            # Create enhanced prompt combining image analysis and user prompt
+            if prompt:
+                enhanced_prompt = f"Create an image inspired by: {image_description}. Additional requirements: {prompt}"
+            else:
+                enhanced_prompt = f"Create an image based on this description: {image_description}"
+            
+            print(f"Enhanced prompt created from image analysis")
+            prompt = enhanced_prompt
+        else:
+            print("Warning: Could not analyze inspiration image, using original prompt")
+            if not prompt:
+                print("Error: No prompt provided and image analysis failed")
+                return None
 
     try:
-        print(f"Generating image for: '{prompt}'...")
+        print(f"Generating image for: '{prompt[:100]}{'...' if len(prompt) > 100 else ''}' ...")
         print(f"Model: {model}, Size: {size}, Quality: {quality}")
 
         # Cast parameters to proper types for OpenAI API
@@ -173,6 +255,11 @@ def main():
         choices=["low", "medium", "high", "standard", "hd"],
         help="Image quality (default: low for cost efficiency). gpt-image-1: low/medium/high. DALL-E 3: standard/hd",
     )
+    parser.add_argument(
+        "--inspiration-image",
+        "-i",
+        help="Path to an image file to use as inspiration. The image will be analyzed and used to enhance the prompt.",
+    )
 
     args = parser.parse_args()
 
@@ -180,14 +267,21 @@ def main():
     if args.prompt:
         prompt = args.prompt
     else:
-        # Interactive mode
-        print("OpenAI Image Generator")
-        print("-" * 40)
-        prompt = input("Describe the image you want: ").strip()
+        # Interactive mode - only if no inspiration image or if user wants additional prompt
+        if not args.inspiration_image:
+            print("OpenAI Image Generator")
+            print("-" * 40)
+            prompt = input("Describe the image you want: ").strip()
 
-        if not prompt:
-            print("No prompt provided. Exiting.")
-            return
+            if not prompt:
+                print("No prompt provided. Exiting.")
+                return
+        else:
+            # With inspiration image, prompt is optional
+            print("OpenAI Image Generator")
+            print("-" * 40)
+            print(f"Using inspiration image: {args.inspiration_image}")
+            prompt = input("Additional requirements (or press Enter to skip): ").strip()
 
     # Generate the image with optional parameters
     result = generate_image(
@@ -196,6 +290,7 @@ def main():
         model=args.model,
         size=args.size,
         quality=args.quality,
+        inspiration_image=args.inspiration_image,
     )
 
     if result:
