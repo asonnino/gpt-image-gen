@@ -15,7 +15,7 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/asonnino/openai-image-generator",
     packages=find_packages(),
-    py_modules=["generate_image"],
+    py_modules=["gpt_image_gen"],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: Apache Software License",
@@ -25,7 +25,7 @@ setup(
     install_requires=requirements,
     entry_points={
         "console_scripts": [
-            "gpt-image-gen=generate_image:main",
+            "gpt-image-gen=gpt_image_gen:main",
         ],
     },
 )

@@ -1,4 +1,4 @@
-# Image Generator
+# GPT Image Generator
 
 A simple Python script to generate images using OpenAI's latest gpt-image-1 model by describing what you want in plain English.
 
