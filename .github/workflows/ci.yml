@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install ruff
+    
+    - name: Lint with ruff
+      run: |
+        # Stop the build if there are Python syntax errors or undefined names
+        ruff check . --select=E9,F63,F7,F82
+        # Check for other issues
+        ruff check .
+    
+    - name: Check imports
+      run: |
+        python -c "import gpt_image_gen; print('✓ Module imports successfully')"
+    
+    - name: Verify CLI help
+      run: |
+        python gpt_image_gen.py --help
