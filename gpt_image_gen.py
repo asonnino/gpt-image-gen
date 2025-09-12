@@ -109,7 +109,7 @@ def generate_image(
                     f"Create an image based on this description: {image_description}"
                 )
 
-            print(f"Enhanced prompt created from image analysis")
+            print("Enhanced prompt created from image analysis")
             prompt = enhanced_prompt
         else:
             print("Warning: Could not analyze inspiration image, using original prompt")
@@ -163,7 +163,7 @@ def generate_image(
             print(f"Using gpt-image-1 with quality: {generate_params['quality']}")
 
         # Generate image
-        print(f"Calling OpenAI API...")
+        print("Calling OpenAI API...")
         response = client.images.generate(**generate_params)
 
         # Get image data
