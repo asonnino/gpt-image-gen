@@ -84,18 +84,21 @@ def generate_image(
                 c for c in prompt[:30] if c.isalnum() or c in (" ", "-", "_")
             ).rstrip()
             filename = f"image_{timestamp}_{safe_prompt}.png"
-            
+
             # Handle different response formats based on model
             if model == "gpt-image-1":
                 # gpt-image-1 always returns base64-encoded images
-                if hasattr(response.data[0], 'b64_json') and response.data[0].b64_json:
+                if hasattr(response.data[0], "b64_json") and response.data[0].b64_json:
                     import base64
+
                     print("Decoding base64 image from gpt-image-1...")
                     image_data = base64.b64decode(response.data[0].b64_json)
                     with open(filename, "wb") as f:
                         f.write(image_data)
                 else:
-                    print(f"No b64_json in gpt-image-1 response. Available attributes: {dir(response.data[0])}")
+                    print(
+                        f"No b64_json in gpt-image-1 response. Available attributes: {dir(response.data[0])}"
+                    )
                     return None
             else:
                 # DALL-E 3 returns URLs
@@ -114,7 +117,7 @@ def generate_image(
         else:
             print(f"No image data received from API")
             return None
-            
+
         print(f"✓ Image saved as: {filename}")
         return filename
 
