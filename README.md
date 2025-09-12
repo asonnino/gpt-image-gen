@@ -39,7 +39,7 @@ gpt-image-gen --prompt "a beautiful sunset"
 ### Interactive mode
 
 ```bash
-python generate_image.py
+python gpt_image_gen.py
 ```
 
 Then enter your image description when prompted.
@@ -47,38 +47,38 @@ Then enter your image description when prompted.
 ### Command line mode
 
 ```bash
-python generate_image.py --prompt "a beautiful sunset over mountains with purple clouds"
+python gpt_image_gen.py --prompt "a beautiful sunset over mountains with purple clouds"
 
 # Or use the short form
-python generate_image.py -p "a beautiful sunset over mountains with purple clouds"
+python gpt_image_gen.py -p "a beautiful sunset over mountains with purple clouds"
 ```
 
 ### With custom API key
 
 ```bash
-python generate_image.py --prompt "a robot painting a picture" --api-key "your-api-key-here"
+python gpt_image_gen.py --prompt "a robot painting a picture" --api-key "your-api-key-here"
 ```
 
 ### With custom options
 
 ```bash
 # Use DALL-E 3 with HD quality
-python generate_image.py --prompt "a futuristic city" --model dall-e-3 --quality hd
+python gpt_image_gen.py --prompt "a futuristic city" --model dall-e-3 --quality hd
 
 # Generate a portrait-oriented image
-python generate_image.py -p "a tall tree" --size 1024x1536
+python gpt_image_gen.py -p "a tall tree" --size 1024x1536
 
 # Fast generation with low quality
-python generate_image.py -p "quick sketch" --quality low
+python gpt_image_gen.py -p "quick sketch" --quality low
 
 # Combine multiple options
-python generate_image.py -p "sunset" -m gpt-image-1 -s 1024x1024 -q high
+python gpt_image_gen.py -p "sunset" -m gpt-image-1 -s 1024x1024 -q high
 ```
 
 ### View help
 
 ```bash
-python generate_image.py --help
+python gpt_image_gen.py --help
 ```
 
 The generated image will be saved in the current directory with a timestamp and description in the filename.
