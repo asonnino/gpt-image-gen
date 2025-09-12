@@ -15,35 +15,35 @@ import base64
 
 def analyze_image_with_vision(image_path, api_key=None, user_prompt=None):
     """Analyze an image using GPT-4 Vision and generate a detailed description."""
-    
+
     # Get API key from environment or parameter
     if not api_key:
         api_key = os.getenv("OPENAI_API_KEY")
-    
+
     if not api_key:
         print("Error: OpenAI API key not found!")
         return None
-    
+
     # Check if image file exists
     if not os.path.exists(image_path):
         print(f"Error: Image file not found: {image_path}")
         return None
-    
+
     # Initialize OpenAI client
     client = OpenAI(api_key=api_key)
-    
+
     try:
         # Read and encode the image
         with open(image_path, "rb") as image_file:
-            base64_image = base64.b64encode(image_file.read()).decode('utf-8')
-        
+            base64_image = base64.b64encode(image_file.read()).decode("utf-8")
+
         print(f"Analyzing inspiration image: {image_path}...")
-        
+
         # Prepare the vision prompt
         vision_prompt = "Analyze this image in detail. Describe the style, colors, composition, mood, lighting, and any notable elements. Be specific and detailed."
         if user_prompt:
             vision_prompt += f" Also consider this user guidance: {user_prompt}"
-        
+
         # Call GPT-4 Vision
         response = client.chat.completions.create(
             model="gpt-4o",  # Using GPT-4o for vision capabilities
@@ -51,33 +51,35 @@ def analyze_image_with_vision(image_path, api_key=None, user_prompt=None):
                 {
                     "role": "user",
                     "content": [
-                        {
-                            "type": "text",
-                            "text": vision_prompt
-                        },
+                        {"type": "text", "text": vision_prompt},
                         {
                             "type": "image_url",
                             "image_url": {
                                 "url": f"data:image/jpeg;base64,{base64_image}"
-                            }
-                        }
-                    ]
+                            },
+                        },
+                    ],
                 }
             ],
-            max_tokens=500
+            max_tokens=500,
         )
-        
+
         description = response.choices[0].message.content
         print("✓ Image analysis complete")
         return description
-        
+
     except Exception as e:
         print(f"Error analyzing image: {e}")
         return None
 
 
 def generate_image(
-    prompt, api_key=None, model="gpt-image-1", size="1024x1024", quality="low", inspiration_image=None
+    prompt,
+    api_key=None,
+    model="gpt-image-1",
+    size="1024x1024",
+    quality="low",
+    inspiration_image=None,
 ):
     """Generate an image from a text prompt using OpenAI's image models."""
 
@@ -92,17 +94,21 @@ def generate_image(
 
     # Initialize OpenAI client
     client = OpenAI(api_key=api_key)
-    
+
     # If inspiration image is provided, analyze it first
     if inspiration_image:
-        image_description = analyze_image_with_vision(inspiration_image, api_key, prompt)
+        image_description = analyze_image_with_vision(
+            inspiration_image, api_key, prompt
+        )
         if image_description:
             # Create enhanced prompt combining image analysis and user prompt
             if prompt:
                 enhanced_prompt = f"Create an image inspired by: {image_description}. Additional requirements: {prompt}"
             else:
-                enhanced_prompt = f"Create an image based on this description: {image_description}"
-            
+                enhanced_prompt = (
+                    f"Create an image based on this description: {image_description}"
+                )
+
             print(f"Enhanced prompt created from image analysis")
             prompt = enhanced_prompt
         else:
@@ -112,7 +118,9 @@ def generate_image(
                 return None
 
     try:
-        print(f"Generating image for: '{prompt[:100]}{'...' if len(prompt) > 100 else ''}' ...")
+        print(
+            f"Generating image for: '{prompt[:100]}{'...' if len(prompt) > 100 else ''}' ..."
+        )
         print(f"Model: {model}, Size: {size}, Quality: {quality}")
 
         # Cast parameters to proper types for OpenAI API
@@ -197,7 +205,7 @@ def generate_image(
                     print(f"No URL in DALL-E response")
                     return None
         else:
-            print(f"No image data received from API")
+            print("No image data received from API")
             return None
 
         print(f"✓ Image saved as: {filename}")
@@ -294,7 +302,7 @@ def main():
     )
 
     if result:
-        print(f"\n✓ Successfully generated image!")
+        print("\n✓ Successfully generated image!")
     else:
         print("\n✗ Failed to generate image.")
         sys.exit(1)
