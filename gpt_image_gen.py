@@ -202,7 +202,7 @@ def generate_image(
                         print(f"Error downloading image: {image_response.status_code}")
                         return None
                 else:
-                    print(f"No URL in DALL-E response")
+                    print("No URL in DALL-E response")
                     return None
         else:
             print("No image data received from API")
